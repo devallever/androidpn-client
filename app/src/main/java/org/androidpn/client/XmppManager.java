@@ -109,6 +109,7 @@ public class XmppManager {
 
     public void connect() {
         Log.d(LOGTAG, "connect()...");
+        //提交一个Logon任务
         submitLoginTask();
     }
 
@@ -236,17 +237,20 @@ public class XmppManager {
 
     private void submitConnectTask() {
         Log.d(LOGTAG, "submitConnectTask()...");
+        //添加一个连接任务，该任务的run方法将会执行
         addTask(new ConnectTask());
     }
 
     private void submitRegisterTask() {
         Log.d(LOGTAG, "submitRegisterTask()...");
+        //提交一个连接任务
         submitConnectTask();
         addTask(new RegisterTask());
     }
 
     private void submitLoginTask() {
         Log.d(LOGTAG, "submitLoginTask()...");
+        //提交一个注册任务
         submitRegisterTask();
         addTask(new LoginTask());
     }
@@ -315,6 +319,7 @@ public class XmppManager {
                     Log.e(LOGTAG, "XMPP connection failed", e);
                 }
 
+                //执行下一个Task
                 xmppManager.runTask();
 
             } else {
@@ -339,15 +344,19 @@ public class XmppManager {
             Log.i(LOGTAG, "RegisterTask.run()...");
 
             if (!xmppManager.isRegistered()) {
+                //生产随机用户名和密码
                 final String newUsername = newRandomUUID();
                 final String newPassword = newRandomUUID();
 
+                //smack
                 Registration registration = new Registration();
 
+                //返回数据过滤
                 PacketFilter packetFilter = new AndFilter(new PacketIDFilter(
                         registration.getPacketID()), new PacketTypeFilter(
                         IQ.class));
 
+                //监听服务器返回数据会掉
                 PacketListener packetListener = new PacketListener() {
 
                     public void processPacket(Packet packet) {

@@ -69,6 +69,7 @@ public final class ServiceManager {
         //        //            throw new RuntimeException();
         //        //        }
 
+        //加载配置文件
         props = loadProperties();
         apiKey = props.getProperty("apiKey", "");
         xmppHost = props.getProperty("xmppHost", "192.168.43.235");
@@ -93,14 +94,9 @@ public final class ServiceManager {
     }
 
     public void startService() {
-        Thread serviceThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                Intent intent = NotificationService.getIntent();
-                context.startService(intent);
-            }
-        });
-        serviceThread.start();
+        //启动 NotificationService 这个服务
+        Intent intent = NotificationService.getIntent();
+        context.startService(intent);
     }
 
     public void stopService() {

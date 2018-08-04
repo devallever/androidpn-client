@@ -100,6 +100,7 @@ class PacketReader {
      */
     synchronized public void startup() throws XMPPException {
         readerThread.start();
+        System.out.println("picketReader startup");
         // Wait for stream tag before returning. We'll wait a couple of seconds before
         // giving up and throwing an error.
         try {
@@ -150,6 +151,7 @@ class PacketReader {
      * to be sent by the server.
      */
     private void resetParser() {
+        System.out.println("packetReader resetParser.......");
         try {
             parser = XmlPullParserFactory.newInstance().newPullParser();
             parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, true);
@@ -166,7 +168,9 @@ class PacketReader {
      * @param thread the thread that is being used by the reader to parse incoming packets.
      */
     private void parsePackets(Thread thread) {
+        System.out.println("packetReader parsePackets.......");
         try {
+            //解析xml
             int eventType = parser.getEventType();
             do {
                 if (eventType == XmlPullParser.START_TAG) {

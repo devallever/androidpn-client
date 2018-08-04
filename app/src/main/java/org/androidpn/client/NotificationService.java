@@ -58,6 +58,7 @@ public class NotificationService extends Service {
 
     private PhoneStateListener phoneStateListener;
 
+    //线程池
     private ExecutorService executorService;
 
     private TaskSubmitter taskSubmitter;
@@ -112,6 +113,7 @@ public class NotificationService extends Service {
         }
         Log.d(LOGTAG, "deviceId=" + deviceId);
 
+        //创建xmppManager对象
         xmppManager = new XmppManager(this);
 
         taskSubmitter.submit(new Runnable() {
@@ -224,6 +226,7 @@ public class NotificationService extends Service {
         unregisterReceiver(connectivityReceiver);
     }
 
+    //该方法将在线程池创建子线程中执行
     private void start() {
         Log.d(LOGTAG, "start()...");
         registerNotificationReceiver();
@@ -258,6 +261,7 @@ public class NotificationService extends Service {
             if (!notificationService.getExecutorService().isTerminated()
                     && !notificationService.getExecutorService().isShutdown()
                     && task != null) {
+                //向线程池中提交一个任务，该任务的run方法会在子线程中执行
                 result = notificationService.getExecutorService().submit(task);
             }
             return result;

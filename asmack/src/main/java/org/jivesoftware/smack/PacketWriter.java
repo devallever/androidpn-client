@@ -109,6 +109,7 @@ class PacketWriter {
      */
     public void startup() {
         writerThread.start();
+        System.out.println("picketWriter startup");
     }
 
     void setWriter(Writer writer) {
@@ -153,9 +154,11 @@ class PacketWriter {
     private void writePackets(Thread thisThread) {
         try {
             // Open the stream.
+            //向服务器发送是初始化的请求
             openStream();
             // Write out packets from the queue.
             while (!done && (writerThread == thisThread)) {
+                //阻塞方法nextPacket(),当queue有消息时往下执行
                 Packet packet = nextPacket();
                 if (packet != null) {
                     writer.write(packet.toXML());

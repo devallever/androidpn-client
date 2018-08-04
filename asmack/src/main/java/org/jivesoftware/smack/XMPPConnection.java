@@ -617,10 +617,12 @@ public class XMPPConnection extends Connection {
         serverAckdCompression = false;
 
         // Set the reader and writer instance variables
+        //初始化从socket中读取和写入的流
         initReaderAndWriter();
 
         try {
             if (isFirstInitialization) {
+                //这是具体的向S读写的对象
                 packetWriter = new PacketWriter(this);
                 packetReader = new PacketReader(this);
 
@@ -646,6 +648,7 @@ public class XMPPConnection extends Connection {
 
             // Make note of the fact that we're now connected.
             connected = true;
+            System.out.println("XMPPConnection connected = true.....");
 
             if (isFirstInitialization) {
                 // Notify listeners that a new connection has been established
