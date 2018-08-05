@@ -232,4 +232,39 @@ class PacketWriter {
         writer.write(stream.toString());
         writer.flush();
     }
+
+    public void startBeatThread(){
+        HeartBeatThread heartBeatThread = new HeartBeatThread();
+        heartBeatThread.start();
+    }
+
+    /**
+     * 心跳包线程
+     */
+    class HeartBeatThread extends Thread{
+        @Override
+        public void run() {
+            while (!done){
+                try {
+                    writer.write(" ");
+                    writer.flush();
+                    System.out.println("send heart beat once...");
+                    //通常1分钟发一次，debug时 10秒
+                    Thread.sleep(10 * 1000);
+                }catch (Exception e){
+                    e.printStackTrace();
+                    // The exception can be ignored if the the connection is 'done'
+                    // or if the it was caused because the socket got closed
+                    if (!(done || connection.isSocketClosed())) {
+                        done = true;
+                        // packetReader could be set to null by an concurrent disconnect() call.
+                        // Therefore Prevent NPE exceptions by checking packetReader.
+                        if (connection.packetReader != null) {
+                            connection.notifyConnectionError(e);
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

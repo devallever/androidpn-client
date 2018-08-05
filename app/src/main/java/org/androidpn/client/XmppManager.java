@@ -452,7 +452,7 @@ public class XmppManager {
                     PacketListener packetListener = xmppManager
                             .getNotificationPacketListener();
                     connection.addPacketListener(packetListener, packetFilter);
-
+                    connection.startHeartBeat();
                     xmppManager.runTask();
 
                 } catch (XMPPException e) {
