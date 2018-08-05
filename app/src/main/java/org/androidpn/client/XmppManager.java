@@ -48,6 +48,8 @@ import android.util.Log;
  */
 public class XmppManager {
 
+    private static final String TAG = "XmppManager";
+
     private static final String LOGTAG = LogUtil.makeLogTag(XmppManager.class);
 
     private static final String XMPP_RESOURCE_NAME = "AndroidpnClient";
@@ -170,9 +172,18 @@ public class XmppManager {
         return notificationPacketListener;
     }
 
+    /**
+     *
+     * 登录失败时可以调用
+     * 登录成功以后，由于某些原因异常，执行重连
+     * 服务器端出现异常
+     */
     public void startReconnectionThread() {
         synchronized (reconnection) {
-            if (!reconnection.isAlive()) {
+            //如何没有线程执行重连
+            if (reconnection == null ||!reconnection.isAlive()) {
+                //重新new 避免 多次调用同一线程多次调用start();
+                reconnection = new ReconnectionThread(this);
                 reconnection.setName("Xmpp Reconnection Thread");
                 reconnection.start();
             }
