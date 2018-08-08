@@ -23,6 +23,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * This is an androidpn client demo application.
  * 
@@ -50,6 +53,11 @@ public class DemoAppActivity extends Activity {
         serviceManager.setNotificationIcon(R.drawable.notification);
         serviceManager.startService();
         serviceManager.setAlias("allever");
+
+        List<String> tagList = new ArrayList<String>();
+        tagList.add("sport");
+        tagList.add("music");
+        serviceManager.setTags(tagList);
     }
 
 }

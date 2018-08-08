@@ -15,6 +15,7 @@
  */
 package org.androidpn.client;
 
+import java.util.List;
 import java.util.Properties;
 
 import android.app.Activity;
@@ -102,6 +103,45 @@ public final class ServiceManager {
         //启动 NotificationService 这个服务
         Intent intent = NotificationService.getIntent();
         context.startService(intent);
+    }
+
+    public void setTags(final List<String> tagList){
+        final String username = sharedPrefs.getString(Constants.XMPP_USERNAME, "");
+        if (tagList == null || tagList.isEmpty() || TextUtils.isEmpty(username)){
+            return;
+        }
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+
+                    NotificationService notificationService = NotificationService.getNotificationService();
+                    if (notificationService != null){
+                        XmppManager xmppManager = notificationService.getXmppManager();
+                        if (xmppManager != null){
+                            if (!xmppManager.getConnection().isAuthenticated()){
+                                Log.d(TAG, "run: wait for setTagsIQ");
+                                //在登录LoginTask完成之后,通知notifyAll();然后往下执行
+                                synchronized (xmppManager){
+                                    xmppManager.wait();
+                                }
+                            }
+                            Log.d(TAG, "Authenticated success, send setTagsIQ");
+                            SetTagIQ setTagIQ = new SetTagIQ();
+                            setTagIQ.setUsername(username);
+                            setTagIQ.setTagList(tagList);
+                            setTagIQ.setType(IQ.Type.SET);
+                            xmppManager.getConnection().sendPacket(setTagIQ);
+                        }
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        }).start();
+
     }
 
     public void setAlias(final String alias){
