@@ -498,6 +498,10 @@ public class XmppManager {
                     connection.addPacketListener(packetListener, packetFilter);
                     connection.startHeartBeat();
 
+                    synchronized (xmppManager){
+                        xmppManager.notifyAll();
+                    }
+
                 } catch (XMPPException e) {
                     Log.e(LOGTAG, "LoginTask.run()... xmpp error");
                     Log.e(LOGTAG, "Failed to login to xmpp server. Caused by: "

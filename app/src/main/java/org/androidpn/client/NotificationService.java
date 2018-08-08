@@ -41,6 +41,8 @@ import android.util.Log;
  */
 public class NotificationService extends Service {
 
+    public static NotificationService sNotificationService;
+
     private static final String LOGTAG = LogUtil
             .makeLogTag(NotificationService.class);
 
@@ -80,9 +82,16 @@ public class NotificationService extends Service {
         taskTracker = new TaskTracker(this);
     }
 
+    public static NotificationService getNotificationService(){
+        return sNotificationService;
+    }
+
     @Override
     public void onCreate() {
         Log.d(LOGTAG, "onCreate()...");
+
+        sNotificationService = this;
+
         telephonyManager = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
         // wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
         // connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -131,6 +140,7 @@ public class NotificationService extends Service {
     @Override
     public void onDestroy() {
         Log.d(LOGTAG, "onDestroy()...");
+        sNotificationService = null;
         stop();
     }
 

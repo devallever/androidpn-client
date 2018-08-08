@@ -22,7 +22,10 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.text.TextUtils;
 import android.util.Log;
+
+import org.jivesoftware.smack.packet.IQ;
 
 /** 
  * This class is to manage the notificatin service and to load the configuration.
@@ -30,6 +33,8 @@ import android.util.Log;
  * @author Sehwan Noh (devnoh@gmail.com)
  */
 public final class ServiceManager {
+
+    private static final String TAG = "ServiceManager";
 
     private static final String LOGTAG = LogUtil
             .makeLogTag(ServiceManager.class);
@@ -97,6 +102,44 @@ public final class ServiceManager {
         //启动 NotificationService 这个服务
         Intent intent = NotificationService.getIntent();
         context.startService(intent);
+    }
+
+    public void setAlias(final String alias){
+        final String username = sharedPrefs.getString(Constants.XMPP_USERNAME, "");
+        if (TextUtils.isEmpty(username) || TextUtils.isEmpty(alias)){
+            return;
+        }
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(1000);
+                    NotificationService notificationService = NotificationService.getNotificationService();
+                    if (notificationService != null){
+                        XmppManager xmppManager = notificationService.getXmppManager();
+                        if (xmppManager != null){
+                            if (!xmppManager.getConnection().isAuthenticated()){
+                                Log.d(TAG, "run: wait for Authenticated");
+                                synchronized (xmppManager){
+                                    xmppManager.wait();
+                                }
+                            }
+                            Log.d(TAG, "Authenticated success, send setAliasIQ");
+                            SetAliasIQ setAliasIQ = new SetAliasIQ();
+                            setAliasIQ.setUsername(username);
+                            setAliasIQ.setAlias(alias);
+                            setAliasIQ.setType(IQ.Type.SET);
+                            xmppManager.getConnection().sendPacket(setAliasIQ);
+                        }
+
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+
+            }
+        }).start();
+
     }
 
     public void stopService() {
