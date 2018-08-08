@@ -120,6 +120,7 @@ public final class ServiceManager {
                         if (xmppManager != null){
                             if (!xmppManager.getConnection().isAuthenticated()){
                                 Log.d(TAG, "run: wait for Authenticated");
+                                //在登录LoginTask完成之后,通知notifyAll();然后往下执行
                                 synchronized (xmppManager){
                                     xmppManager.wait();
                                 }
