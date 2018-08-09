@@ -100,6 +100,13 @@ public class NotificationSettingsActivity extends PreferenceActivity {
         vibratePref.setDefaultValue(Boolean.TRUE);
         // vibratePref.setDependency(Constants.SETTINGS_NOTIFICATION_ENABLED);
 
+        CheckBoxPreference autoStart = new CheckBoxPreference(this);
+        autoStart.setKey(Constants.SETTINGS_AUTO_START);
+        autoStart.setTitle("Auto Start");
+        autoStart.setSummary("auto start the service inorder to receive message");
+        autoStart.setDefaultValue(Boolean.TRUE);
+
+        root.addPreference(autoStart);
         root.addPreference(notifyPref);
         root.addPreference(soundPref);
         root.addPreference(vibratePref);

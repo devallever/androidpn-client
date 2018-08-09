@@ -58,6 +58,8 @@ public class Constants {
 
     public static final String SETTINGS_TOAST_ENABLED = "SETTINGS_TOAST_ENABLED";
 
+    public static final String SETTINGS_AUTO_START = "SETTINGS_AUTO_START";
+
     // NOTIFICATION FIELDS
 
     public static final String NOTIFICATION_ID = "NOTIFICATION_ID";
