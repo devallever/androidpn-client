@@ -15,6 +15,8 @@
  */
 package org.androidpn.demoapp;
 
+import org.androidpn.client.NotificationHistory;
+import org.androidpn.client.NotificationHistoryActivity;
 import org.androidpn.client.ServiceManager;
 
 import android.app.Activity;
@@ -45,6 +47,14 @@ public class DemoAppActivity extends Activity {
         okButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View view) {
                 ServiceManager.viewNotificationSettings(DemoAppActivity.this);
+            }
+        });
+
+        Button buttonHistory = (Button) findViewById(R.id.id_btn_history);
+        buttonHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                NotificationHistoryActivity.startSelf(DemoAppActivity.this);
             }
         });
 

@@ -2,7 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
 	package="org.androidpn.demoapp" android:versionCode="20101028"
 	android:versionName="0.5.0">
-	<application android:icon="@drawable/icon" android:label="@string/app_name">
+	<application
+		android:name=".MyApplication"
+		android:icon="@drawable/icon" android:label="@string/app_name">
 		<activity android:name=".DemoAppActivity" android:label="@string/app_name">
 			<intent-filter>
 				<action android:name="android.intent.action.MAIN" />
@@ -14,6 +16,9 @@
 		</activity>
 		<activity android:name="org.androidpn.client.NotificationSettingsActivity"
 			android:label="Notification Settings">
+		</activity>
+		<activity android:name="org.androidpn.client.NotificationHistoryActivity"
+			android:label="Notification History">
 		</activity>
 		<service android:enabled="true"
 			android:name="org.androidpn.client.NotificationService"

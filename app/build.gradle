@@ -5,7 +5,7 @@ android {
 
     defaultConfig {
         applicationId "org.androidpn.demoapp"
-        minSdkVersion 8
+        minSdkVersion 10
         targetSdkVersion 3
     }
 
@@ -20,4 +20,5 @@ android {
 dependencies {
     implementation project(':asmack')
     implementation 'com.mcxiaoke.volley:library:1.0.19'
+    implementation 'org.litepal.android:core:2.0.0'
 }

@@ -22,6 +22,10 @@ import org.jivesoftware.smack.packet.Packet;
 import android.content.Intent;
 import android.util.Log;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /** 
  * This class notifies the receiver of incoming notifcation packets asynchronously.  
  *
@@ -58,6 +62,18 @@ public class NotificationPacketListener implements PacketListener {
                 String notificationUri = notification.getUri();
                 String notificationImageUrl = notification.getImageUrl();
 
+                //插入数据
+                NotificationHistory notificationHistory = new NotificationHistory();
+                notificationHistory.setApiKey(notificationApiKey);
+                notificationHistory.setImageUrl(notificationImageUrl);
+                notificationHistory.setMessage(notificationMessage);
+                notificationHistory.setTitle(notificationTitle);
+                notificationHistory.setUri(notificationUri);
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                String time = format.format(new Date());
+                notificationHistory.setTime(time);
+                notificationHistory.save();
+
                 Intent intent = new Intent(Constants.ACTION_SHOW_NOTIFICATION);
                 intent.putExtra(Constants.NOTIFICATION_ID, notificationId);
                 intent.putExtra(Constants.NOTIFICATION_API_KEY,
@@ -83,6 +99,7 @@ public class NotificationPacketListener implements PacketListener {
                 deliverConfirmIQ.setType(IQ.Type.SET);
                 xmppManager.getConnection().sendPacket(deliverConfirmIQ);
                 Log.d(TAG, "processPacket: send deliverConfirm");
+
             }
         }
 
