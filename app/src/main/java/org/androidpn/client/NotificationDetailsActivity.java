@@ -19,6 +19,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -28,6 +29,11 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.android.volley.RequestQueue;
+import com.android.volley.toolbox.ImageLoader;
+import com.android.volley.toolbox.NetworkImageView;
+import com.android.volley.toolbox.Volley;
 
 /** 
  * Activity for displaying the notification details view.
@@ -43,12 +49,16 @@ public class NotificationDetailsActivity extends Activity {
 
     private String callbackActivityClassName;
 
+    private RequestQueue mRequestQueue;
+
     public NotificationDetailsActivity() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        mRequestQueue = Volley.newRequestQueue(this);
 
         SharedPreferences sharedPrefs = this.getSharedPreferences(
                 Constants.SHARED_PREFERENCE_NAME, Context.MODE_PRIVATE);
@@ -68,12 +78,15 @@ public class NotificationDetailsActivity extends Activity {
                 .getStringExtra(Constants.NOTIFICATION_MESSAGE);
         String notificationUri = intent
                 .getStringExtra(Constants.NOTIFICATION_URI);
+        String notificationImageUrl = intent
+                .getStringExtra(Constants.NOTIFICATION_IMAGE_URL);
 
         Log.d(LOGTAG, "notificationId=" + notificationId);
         Log.d(LOGTAG, "notificationApiKey=" + notificationApiKey);
         Log.d(LOGTAG, "notificationTitle=" + notificationTitle);
         Log.d(LOGTAG, "notificationMessage=" + notificationMessage);
         Log.d(LOGTAG, "notificationUri=" + notificationUri);
+        Log.d(LOGTAG, "notificationImageUrl=" + notificationImageUrl);
 
         //        Display display = getWindowManager().getDefaultDisplay();
         //        View rootView;
@@ -84,12 +97,12 @@ public class NotificationDetailsActivity extends Activity {
         //        }
 
         View rootView = createView(notificationTitle, notificationMessage,
-                notificationUri);
+                notificationUri, notificationImageUrl);
         setContentView(rootView);
     }
 
     private View createView(final String title, final String message,
-            final String uri) {
+            final String uri, String imageUrl) {
 
         LinearLayout linearLayout = new LinearLayout(this);
         linearLayout.setBackgroundColor(0xffeeeeee);
@@ -164,6 +177,27 @@ public class NotificationDetailsActivity extends Activity {
         innerLayout.addView(okButton);
 
         linearLayout.addView(innerLayout);
+
+        //volley
+        NetworkImageView networkImageView = new NetworkImageView(this);
+        layoutParams = new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                LinearLayout.LayoutParams.WRAP_CONTENT);
+        networkImageView.setLayoutParams(layoutParams);
+        linearLayout.addView(networkImageView);
+
+        ImageLoader imageLoader = new ImageLoader(mRequestQueue, new ImageLoader.ImageCache() {
+            @Override
+            public Bitmap getBitmap(String url) {
+                return null;
+            }
+
+            @Override
+            public void putBitmap(String url, Bitmap bitmap) {
+
+            }
+        });
+        networkImageView.setImageUrl(imageUrl, imageLoader);
 
         return linearLayout;
     }

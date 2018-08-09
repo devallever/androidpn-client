@@ -1,1 +1,1 @@
-include ':app', ':asmack'
+include ':app', ':asmack', ':volley'
